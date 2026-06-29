@@ -1,0 +1,2350 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Cyber Neon Fishing Odyssey</title>
+    <style>
+      /* ==========================================
+           1. CORE STYLES & NEON VARIABLE THEME
+           ========================================== */
+      :root {
+        --bg-dark: #0a0a12;
+        --panel-bg: rgba(16, 16, 28, 0.85);
+        --border-neon: #00ffff;
+        --text-glow: 0 0 8px rgba(0, 255, 255, 0.6);
+        --box-glow: 0 0 15px rgba(0, 255, 255, 0.3);
+
+        /* Rarity Neon Colors */
+        --color-common: #9e9e9e;
+        --color-uncommon: #4caf50;
+        --color-rare: #2196f3;
+        --color-epic: #9c27b0;
+        --color-legendary: #ffc107;
+        --color-mythic: #f44336;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        -webkit-user-select: none;
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        background-color: #030305;
+        color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      /* 9:16 Aspect Ratio Mobile Wrapper */
+      #game-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 450px;
+        height: 100vh;
+        max-height: 800px;
+        aspect-ratio: 9 / 16;
+        background-color: var(--bg-dark);
+        border: 2px solid var(--border-neon);
+        box-shadow: var(--box-glow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Rainbow Animation for Ultra Legendary */
+      @keyframes rainbow-glow {
+        0% {
+          color: #ff00ff;
+          text-shadow: 0 0 10px #ff00ff;
+          border-color: #ff00ff;
+          box-shadow: 0 0 10px #ff00ff;
+        }
+        20% {
+          color: #00ffff;
+          text-shadow: 0 0 10px #00ffff;
+          border-color: #00ffff;
+          box-shadow: 0 0 10px #00ffff;
+        }
+        40% {
+          color: #00ff00;
+          text-shadow: 0 0 10px #00ff00;
+          border-color: #00ff00;
+          box-shadow: 0 0 10px #00ff00;
+        }
+        60% {
+          color: #ffff00;
+          text-shadow: 0 0 10px #ffff00;
+          border-color: #ffff00;
+          box-shadow: 0 0 10px #ffff00;
+        }
+        80% {
+          color: #ff3300;
+          text-shadow: 0 0 10px #ff3300;
+          border-color: #ff3300;
+          box-shadow: 0 0 10px #ff3300;
+        }
+        100% {
+          color: #ff00ff;
+          text-shadow: 0 0 10px #ff00ff;
+          border-color: #ff00ff;
+          box-shadow: 0 0 10px #ff00ff;
+        }
+      }
+
+      .rarity-common {
+        color: var(--color-common);
+        text-shadow: 0 0 5px var(--color-common);
+      }
+      .rarity-uncommon {
+        color: var(--color-uncommon);
+        text-shadow: 0 0 6px var(--color-uncommon);
+      }
+      .rarity-rare {
+        color: var(--color-rare);
+        text-shadow: 0 0 8px var(--color-rare);
+      }
+      .rarity-epic {
+        color: var(--color-epic);
+        text-shadow: 0 0 10px var(--color-epic);
+      }
+      .rarity-legendary {
+        color: var(--color-legendary);
+        text-shadow: 0 0 12px var(--color-legendary);
+      }
+      .rarity-mythic {
+        color: var(--color-mythic);
+        text-shadow: 0 0 14px var(--color-mythic);
+      }
+      .rarity-ultra {
+        animation: rainbow-glow 3s linear infinite;
+      }
+
+      .bg-rarity-common {
+        border-color: var(--color-common);
+        box-shadow: inset 0 0 8px rgba(158, 158, 158, 0.2);
+      }
+      .bg-rarity-uncommon {
+        border-color: var(--color-uncommon);
+        box-shadow: inset 0 0 8px rgba(76, 175, 80, 0.2);
+      }
+      .bg-rarity-rare {
+        border-color: var(--color-rare);
+        box-shadow: inset 0 0 8px rgba(33, 150, 243, 0.2);
+      }
+      .bg-rarity-epic {
+        border-color: var(--color-epic);
+        box-shadow: inset 0 0 12px rgba(156, 39, 176, 0.2);
+      }
+      .bg-rarity-legendary {
+        border-color: var(--color-legendary);
+        box-shadow: inset 0 0 12px rgba(255, 193, 7, 0.2);
+      }
+      .bg-rarity-mythic {
+        border-color: var(--color-mythic);
+        box-shadow: inset 0 0 15px rgba(244, 67, 54, 0.2);
+      }
+      .bg-rarity-ultra {
+        animation: rainbow-glow 3s linear infinite;
+        background: rgba(20, 10, 30, 0.8) !important;
+      }
+
+      /* ==========================================
+           2. HEADER & NAVIGATION UI
+           ========================================== */
+      header {
+        padding: 12px 16px;
+        background: rgba(10, 10, 20, 0.9);
+        border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 10;
+      }
+
+      .currency-container {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #00ffff;
+        text-shadow: var(--text-glow);
+      }
+
+      .currency-icon {
+        color: #ffd700;
+        text-shadow: 0 0 8px #ffd700;
+      }
+
+      .active-rod-badge {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        border: 1px solid #ff00ff;
+        text-shadow: 0 0 4px #ff00ff;
+        background: rgba(255, 0, 255, 0.1);
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* Main Content Viewports */
+      .view-panel {
+        flex: 1;
+        display: none;
+        overflow-y: auto;
+        padding: 16px;
+        padding-bottom: 80px;
+        position: relative;
+      }
+
+      .view-panel.active {
+        display: block;
+      }
+
+      /* Navigation Bar */
+      nav {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 65px;
+        background: rgba(5, 5, 10, 0.95);
+        border-top: 1px solid rgba(0, 255, 255, 0.3);
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        z-index: 100;
+      }
+
+      .nav-btn {
+        background: none;
+        border: none;
+        color: #8888aa;
+        font-size: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+        width: 20%;
+      }
+
+      .nav-btn i {
+        font-size: 1.3rem;
+      }
+      .nav-btn.active {
+        color: #00ffff;
+        text-shadow: var(--text-glow);
+      }
+
+      /* ==========================================
+           3. GAME CANVAS VIEW
+           ========================================== */
+      #view-game {
+        padding: 0;
+        overflow: hidden;
+      }
+      #game-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        background: linear-gradient(
+          to bottom,
+          #070b19 0%,
+          #032240 30%,
+          #011126 70%,
+          #00050d 100%
+        );
+      }
+
+      .tap-prompt {
+        position: absolute;
+        bottom: 115px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1rem;
+        letter-spacing: 2px;
+        color: #00ffff;
+        text-shadow: var(--text-glow);
+        animation: pulse 1.5s infinite alternate;
+        pointer-events: none;
+        text-align: center;
+        font-weight: 300;
+        background: rgba(0, 0, 0, 0.4);
+        padding: 6px 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(0, 255, 255, 0.2);
+      }
+
+      /* Auto Fishing Button Style */
+      #auto-fish-btn {
+        position: absolute;
+        bottom: 170px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(10, 10, 25, 0.85);
+        border: 1px solid #ff00ff;
+        color: #ff00ff;
+        padding: 8px 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+        border-radius: 25px;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);
+        z-index: 30;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      #auto-fish-btn.active {
+        background: #ff00ff;
+        color: #000;
+        box-shadow:
+          0 0 15px #ff00ff,
+          inset 0 0 5px #fff;
+        border-color: #fff;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 0.4;
+          text-shadow: 0 0 2px #00ffff;
+        }
+        100% {
+          opacity: 1;
+          text-shadow:
+            0 0 12px #00ffff,
+            0 0 20px #ff00ff;
+        }
+      }
+
+      /* Floating Text Effects */
+      .floating-text {
+        position: absolute;
+        pointer-events: none;
+        font-weight: bold;
+        font-size: 1.5rem;
+        color: #ffd700;
+        text-shadow: 0 0 8px #ffd700;
+        animation: floatUp 1.2s ease-out forwards;
+        z-index: 50;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) scale(0.8);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-80px) scale(1.2);
+          opacity: 0;
+        }
+      }
+
+      /* Biome Selector Ribbon */
+      .biome-selector {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        display: flex;
+        gap: 6px;
+        z-index: 20;
+      }
+      .biome-btn {
+        flex: 1;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        color: #fff;
+        font-size: 0.65rem;
+        padding: 6px 2px;
+        border-radius: 4px;
+        cursor: pointer;
+        text-align: center;
+      }
+      .biome-btn.active {
+        border-color: #ff00ff;
+        box-shadow: 0 0 8px #ff00ff;
+        font-weight: bold;
+      }
+
+      /* ==========================================
+           4. MODULAR CARD & GRID UI (SHOP / INVENTORY / POKEDEX)
+           ========================================== */
+      .view-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #ff00ff;
+        text-shadow: 0 0 8px rgba(255, 0, 255, 0.6);
+        margin-bottom: 12px;
+        border-left: 4px solid #ff00ff;
+        padding-left: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .neon-card {
+        background: var(--panel-bg);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .neon-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(0, 255, 255, 0.5),
+          transparent
+        );
+      }
+
+      /* Shop Elements */
+      .rod-tier-title {
+        font-size: 0.9rem;
+        font-weight: bold;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .rod-price {
+        font-size: 0.8rem;
+        color: #ffd700;
+        margin: 4px 0;
+        font-weight: 600;
+      }
+      .rod-stats {
+        font-size: 0.65rem;
+        color: #aaa;
+        margin-bottom: 8px;
+        line-height: 1.3;
+        flex: 1;
+      }
+      .shop-btn {
+        background: transparent;
+        border: 1px solid #00ffff;
+        color: #00ffff;
+        padding: 6px;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        text-shadow: var(--text-glow);
+        box-shadow: inset 0 0 4px rgba(0, 255, 255, 0.2);
+        width: 100%;
+      }
+      .shop-btn:disabled {
+        border-color: #444;
+        color: #666;
+        text-shadow: none;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+      .shop-btn.equipped {
+        border-color: #ff00ff;
+        color: #ff00ff;
+        text-shadow: 0 0 4px #ff00ff;
+      }
+
+      /* Inventory & Selling Elements */
+      .inventory-actions {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 8px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid rgba(255, 0, 255, 0.1);
+      }
+      .action-btn {
+        background: linear-gradient(135deg, #9c27b0, #e91e63);
+        border: none;
+        color: white;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        box-shadow: 0 0 8px rgba(233, 30, 99, 0.4);
+      }
+
+      .item-emoji {
+        font-size: 2rem;
+        text-align: center;
+        margin: 8px 0;
+      }
+      .item-name {
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .item-rarity-tag {
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        text-align: center;
+        margin: 2px 0 6px 0;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+      .item-value {
+        font-size: 0.75rem;
+        color: #ffd700;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 8px;
+      }
+
+      /* Collection / Pokédex Elements */
+      .pokedex-stats {
+        background: rgba(0, 255, 255, 0.05);
+        border: 1px solid rgba(0, 255, 255, 0.2);
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 12px;
+      }
+      .pokedex-progress-bar {
+        width: 100%;
+        height: 6px;
+        background: #222;
+        border-radius: 3px;
+        margin-top: 6px;
+        overflow: hidden;
+      }
+      .pokedex-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #00ffff, #ff00ff);
+        box-shadow: 0 0 8px #00ffff;
+        transition: width 0.3s ease;
+      }
+      .filter-ribbon {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+        scrollbar-width: none;
+      }
+      .filter-ribbon::-webkit-scrollbar {
+        display: none;
+      }
+      .filter-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #ccc;
+        font-size: 0.65rem;
+        padding: 4px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+      .filter-btn.active {
+        background: #00ffff;
+        color: #000;
+        font-weight: bold;
+        box-shadow: 0 0 6px #00ffff;
+        border-color: #00ffff;
+      }
+
+      .pokedex-card.locked {
+        opacity: 0.35;
+        filter: grayscale(0.9);
+      }
+      .pokedex-card.locked .item-emoji {
+        filter: brightness(0);
+      }
+
+      /* Settings View */
+      .settings-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 6px;
+        margin-bottom: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .toggle-switch {
+        position: relative;
+        inline-size: 44px;
+        block-size: 22px;
+      }
+      .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #333;
+        transition: 0.3s;
+        border-radius: 22px;
+        border: 1px solid #555;
+      }
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.3s;
+        border-radius: 50%;
+      }
+      input:checked + .slider {
+        background-color: #00ffff;
+        box-shadow: 0 0 8px #00ffff;
+        border-color: #00ffff;
+      }
+      input:checked + .slider:before {
+        transform: translateX(22px);
+        background-color: #000;
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #d32f2f, #f44336);
+        color: white;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 15px;
+        box-shadow: 0 0 10px rgba(244, 67, 54, 0.3);
+      }
+
+      /* ==========================================
+           5. OVERLAY POPUP SYSTEM (CATCH CELEBRATION)
+           ========================================== */
+      .overlay-popup {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(3, 3, 6, 0.9);
+        z-index: 200;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      .overlay-popup.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .catch-window {
+        width: 100%;
+        background: rgba(15, 20, 35, 0.95);
+        border-radius: 16px;
+        border: 2px solid #00ffff;
+        padding: 24px;
+        text-align: center;
+        position: relative;
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.4);
+        transform: scale(0.8);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .overlay-popup.active .catch-window {
+        transform: scale(1);
+      }
+
+      .catch-title {
+        font-size: 1.1rem;
+        letter-spacing: 2px;
+        color: #ff00ff;
+        text-shadow: 0 0 6px #ff00ff;
+        margin-bottom: 4px;
+        font-weight: 300;
+      }
+      .catch-emoji {
+        font-size: 4.5rem;
+        margin: 16px 0;
+        animation: floatEmoji 2s ease-in-out infinite alternate;
+      }
+      @keyframes floatEmoji {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-10px);
+        }
+      }
+      .catch-desc {
+        font-size: 0.75rem;
+        color: #aaa;
+        font-style: italic;
+        margin: 8px 0 16px 0;
+        line-height: 1.4;
+        padding: 0 10px;
+      }
+      .catch-new-tag {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: red;
+        color: white;
+        font-size: 0.6rem;
+        font-weight: bold;
+        padding: 3px 6px;
+        border-radius: 4px;
+        box-shadow: 0 0 8px red;
+        animation: pulse 0.5s infinite alternate;
+      }
+
+      /* Utilities */
+      .empty-text {
+        grid-column: span 2;
+        text-align: center;
+        color: #666;
+        font-size: 0.85rem;
+        padding: 40px 0;
+      }
+      .stat-label {
+        font-size: 0.75rem;
+        color: #888;
+      }
+      .stat-val {
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: #fff;
+      }
+    </style>
+    <!-- FontAwesome Vector Icons for Ultra-Clean Sleek UI Rendering -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div id="game-wrapper">
+      <!-- GLOBAL OVERLAY STATUS HEADER -->
+      <header>
+        <div class="currency-container">
+          <i class="fa-solid fa-bolt currency-icon"></i>
+          <span id="global-coin-count">0</span>
+        </div>
+        <div
+          class="active-rod-badge"
+          id="global-active-rod"
+          title="Cần câu hiện tại"
+        >
+          Khởi Đầu Rod I
+        </div>
+      </header>
+
+      <!-- MODULE 1: MAIN FISHING ZONE -->
+      <div id="view-game" class="view-panel active">
+        <!-- Dynamic Biome Selector Overlay Line -->
+        <div class="biome-selector">
+          <button class="biome-btn active" onclick="gameEngine.setBiome(0)">
+            Hồ Neon Blue
+          </button>
+          <button class="biome-btn" onclick="gameEngine.setBiome(1)">
+            Đầm Lầy Toxic
+          </button>
+          <button class="biome-btn" onclick="gameEngine.setBiome(2)">
+            Băng Vĩnh Cửu
+          </button>
+        </div>
+        <canvas id="game-canvas"></canvas>
+
+        <!-- NEW: Auto Fishing Trigger Button -->
+        <button
+          id="auto-fish-btn"
+          onclick="gameEngine.toggleAutoFishing(event)"
+        >
+          <i class="fa-solid fa-robot"></i> <span>TỰ ĐỘNG CÂU: OFF</span>
+        </button>
+
+        <div class="tap-prompt" id="tap-instruction">CHẠM ĐỂ QUĂNG CẦN</div>
+      </div>
+
+      <!-- MODULE 2: INFINITE JS ALGORITHMIC SHOP -->
+      <div id="view-shop" class="view-panel">
+        <div class="view-title">Cửa Hàng Thiết Bị <span>(500 Cần)</span></div>
+        <div class="grid-container" id="shop-container">
+          <!-- Dynamically populated via algorithmic iterator loop -->
+        </div>
+      </div>
+
+      <!-- MODULE 3: REAL-TIME PLAYER STORAGE BAG -->
+      <div id="view-inventory" class="view-panel">
+        <div class="view-title">Túi Đồ Sản Vật</div>
+        <div class="inventory-actions">
+          <span
+            id="inventory-count-label"
+            class="stat-label"
+            style="color: #aaa"
+            >Đang chứa: 0 con</span
+          >
+          <button class="action-btn" onclick="inventorySystem.sellAll()">
+            Bán Toàn Bộ
+          </button>
+        </div>
+        <div class="grid-container" id="inventory-container">
+          <!-- Populated dynamically via current local state items -->
+        </div>
+      </div>
+
+      <!-- MODULE 4: ENCYCLOPEDIA COLLECTIBLES POKEDEX -->
+      <div id="view-collection" class="view-panel">
+        <div class="view-title">Bách Khoa Đại Dương</div>
+        <div class="pokedex-stats">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              font-size: 0.8rem;
+            "
+          >
+            <span>Tiến độ thu thập sinh vật:</span>
+            <span id="pokedex-ratio-label">0 / 2050</span>
+          </div>
+          <div class="pokedex-progress-bar">
+            <div class="pokedex-progress-fill" id="pokedex-ratio-fill"></div>
+          </div>
+        </div>
+        <!-- Interactive Live Data Matrix Filters -->
+        <div class="filter-ribbon" id="pokedex-filter-container">
+          <button
+            class="filter-btn active"
+            onclick="collectionSystem.filter('all', this)"
+          >
+            Tất Cả
+          </button>
+          <button
+            class="filter-btn"
+            onclick="collectionSystem.filter('common', this)"
+          >
+            Common
+          </button>
+          <button
+            class="filter-btn"
+            onclick="collectionSystem.filter('uncommon', this)"
+          >
+            Uncommon
+          </button>
+          <button
+            class="filter-btn"
+            onclick="collectionSystem.filter('rare', this)"
+          >
+            Rare
+          </button>
+          <button
+            class="filter-btn"
+            onclick="collectionSystem.filter('epic', this)"
+          >
+            Epic
+          </button>
+          <button
+            class="filter-btn"
+            onclick="collectionSystem.filter('legendary', this)"
+          >
+            Legendary
+          </button>
+          <button
+            class="filter-btn"
+            onclick="collectionSystem.filter('mythic', this)"
+          >
+            Mythic
+          </button>
+          <button
+            class="filter-btn"
+            onclick="collectionSystem.filter('ultra', this)"
+          >
+            Ultra
+          </button>
+        </div>
+        <div class="grid-container" id="pokedex-container">
+          <!-- Calculated grid arrays pop up here -->
+        </div>
+      </div>
+
+      <!-- MODULE 5: ANALYTICS & GAME DRIVER SETTINGS -->
+      <div id="view-settings" class="view-panel">
+        <div class="view-title">Cài Đặt Hệ Thống</div>
+        <div class="settings-row">
+          <div>
+            <div style="font-size: 0.85rem">Hiệu Ứng Hồi Đáp Rung (Haptic)</div>
+            <div style="font-size: 0.65rem; color: #666">
+              Rung thiết bị di động khi cá cắn câu
+            </div>
+          </div>
+          <label class="toggle-switch">
+            <input
+              type="checkbox"
+              id="setting-haptic"
+              checked
+              onchange="saveSystem.updateSetting('haptic', this.checked)"
+            />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div style="font-size: 0.85rem">Âm Thanh Tổng Hợp (Audio)</div>
+            <div style="font-size: 0.65rem; color: #666">
+              Phát tiếng động bằng Web Audio API
+            </div>
+          </div>
+          <label class="toggle-switch">
+            <input
+              type="checkbox"
+              id="setting-audio"
+              checked
+              onchange="saveSystem.updateSetting('audio', this.checked)"
+            />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div
+          class="view-title"
+          style="margin-top: 20px; color: #00ffff; border-color: #00ffff"
+        >
+          Thống Kê Nhật Ký
+        </div>
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+          "
+        >
+          <div style="display: flex; justify-content: space-between">
+            <span class="stat-label">Tổng số lần thả câu:</span
+            ><span class="stat-val" id="stats-casts">0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between">
+            <span class="stat-label">Tổng sản lượng thu được:</span
+            ><span class="stat-val" id="stats-catches">0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between">
+            <span class="stat-label">Tổng thu nhập tích lũy:</span
+            ><span class="stat-val" style="color: #ffd700" id="stats-earnings"
+              >0</span
+            >
+          </div>
+        </div>
+
+        <button class="btn-danger" onclick="saveSystem.hardResetGame()">
+          XÓA DỮ LIỆU & RESET GAME
+        </button>
+      </div>
+
+      <!-- INTERACTIVE BOTTOM TAB SELECTOR INTERFACE -->
+      <nav>
+        <button class="nav-btn active" onclick="switchView('game', this)">
+          <i class="fa-solid fa-water"></i>Hồ Câu
+        </button>
+        <button class="nav-btn" onclick="switchView('shop', this)">
+          <i class="fa-solid fa-store"></i>Cửa Hàng
+        </button>
+        <button class="nav-btn" onclick="switchView('inventory', this)">
+          <i class="fa-solid fa-bag-shopping"></i>Túi Đồ
+        </button>
+        <button class="nav-btn" onclick="switchView('collection', this)">
+          <i class="fa-solid fa-book-open"></i>Bộ Sưu Tập
+        </button>
+        <button class="nav-btn" onclick="switchView('settings', this)">
+          <i class="fa-solid fa-sliders"></i>Cài Đặt
+        </button>
+      </nav>
+
+      <!-- PROCEDURAL CELEBRATION MODAL OVERLAY WIN-PANEL -->
+      <div
+        class="overlay-popup"
+        id="catch-modal"
+        onclick="gameEngine.closeCatchModal()"
+      >
+        <div
+          class="catch-window"
+          id="catch-window-card"
+          onclick="event.stopPropagation()"
+        >
+          <div class="catch-new-tag" id="catch-new-badge" style="display: none">
+            NEW
+          </div>
+          <div class="catch-title">BẮT ĐƯỢC SINH VẬT!</div>
+          <div class="catch-emoji" id="catch-display-emoji">🐟</div>
+          <div
+            id="catch-display-name"
+            style="font-size: 1.3rem; font-weight: bold; margin-bottom: 4px"
+          >
+            Cyber Neon Fish
+          </div>
+          <div id="catch-display-rarity" class="item-rarity-tag rarity-common">
+            COMMON
+          </div>
+          <div class="catch-desc" id="catch-display-desc">
+            Mô tả thuật toán sinh ra tự động từ lõi sâu đại dương.
+          </div>
+          <div
+            style="
+              font-size: 0.9rem;
+              color: #ffd700;
+              font-weight: bold;
+              margin-bottom: 15px;
+            "
+          >
+            Giá trị: +<span id="catch-display-value">0</span> vàng
+          </div>
+          <button
+            class="shop-btn"
+            style="border-color: #ff00ff; color: #ff00ff"
+            onclick="gameEngine.closeCatchModal()"
+          >
+            TIẾP TỤC CÂU
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN INTERACTIVE CORE JAVASCRIPT GAME LOOPS -->
+    <script>
+      /**
+       * ====================================================================
+       * ARTIFACT: COMPREHENSIVE MODULAR PROCEDURAL GAME DRIVER CODE ENGINE
+       * ARCHITECTURE: DATA-GENERATORS -> STATE -> CANVAS CORE -> SYSTEMS
+       * ====================================================================
+       */
+
+      // -------------------------------------------------------------
+      // GLOBALS & STATE CONFIGURATIONS
+      // -------------------------------------------------------------
+      let gameState = {
+        coins: 100,
+        activeRodId: 1,
+        purchasedRodIds: [1],
+        caughtCreatureIds: {}, // Key: ID, Value: count
+        inventory: [], // Current array of caught items pending sale
+        stats: { totalCasts: 0, totalCatches: 0, totalEarnings: 0 },
+        settings: { haptic: true, audio: true },
+      };
+
+      // Biome/Lake environments layout profile configurations
+      const biomes = [
+        {
+          id: 0,
+          name: "Hồ Neon Blue",
+          primary: "#00ffff",
+          secondary: "#ff00ff",
+          deep: "#031730",
+          splash: "#ff00ff",
+        },
+        {
+          id: 1,
+          name: "Đầm Lầy Toxic",
+          primary: "#39ff14",
+          secondary: "#00ffcc",
+          deep: "#0a1c08",
+          splash: "#39ff14",
+        },
+        {
+          id: 2,
+          name: "Băng Vĩnh Cửu",
+          primary: "#00bfff",
+          secondary: "#ffffff",
+          deep: "#050f1a",
+          splash: "#ffffff",
+        },
+      ];
+      let currentBiomeIndex = 0;
+
+      // -------------------------------------------------------------
+      // MODULE: RARITY SYSTEM DATA DECK
+      // -------------------------------------------------------------
+      const rarityMatrix = {
+        1: {
+          key: "common",
+          label: "Common",
+          color: "#9E9E9E",
+          minPrice: 5,
+          maxPrice: 20,
+        },
+        2: {
+          key: "uncommon",
+          label: "Uncommon",
+          color: "#4CAF50",
+          minPrice: 20,
+          maxPrice: 80,
+        },
+        3: {
+          key: "rare",
+          label: "Rare",
+          color: "#2196F3",
+          minPrice: 100,
+          maxPrice: 500,
+        },
+        4: {
+          key: "epic",
+          label: "Epic",
+          color: "#9C27B0",
+          minPrice: 1000,
+          maxPrice: 5000,
+        },
+        5: {
+          key: "legendary",
+          label: "Legendary",
+          color: "#FFC107",
+          minPrice: 10000,
+          maxPrice: 50000,
+        },
+        6: {
+          key: "mythic",
+          label: "Mythic",
+          color: "#F44336",
+          minPrice: 100000,
+          maxPrice: 500000,
+        },
+        7: {
+          key: "ultra",
+          label: "Ultra Legendary",
+          color: "#ff00ff",
+          minPrice: 1000000,
+          maxPrice: 2500000,
+        },
+      };
+
+      // -------------------------------------------------------------
+      // MODULE: PROCEDURAL GENERATION ENGINE (RODS & CREATURES)
+      // -------------------------------------------------------------
+      const dataMaster = (() => {
+        const rods = [];
+        const creatures = [];
+
+        // Vocabulary matrix arrays split by Biome for 2050+ Combinatoric Ocean Creatures
+        const biomeVocab = {
+          0: {
+            // Hồ Neon Blue
+            prefixes: [
+              "Cyber",
+              "Neon",
+              "Glow",
+              "Plasma",
+              "Quantum",
+              "Volt",
+              "Glitch",
+              "Cosmic",
+              "Hyper",
+              "Pulse",
+              "Prismatic",
+              "Synthetic",
+              "Matrix",
+              "Nexus",
+              "Vector",
+              "Digital",
+            ],
+            species: [
+              { type: "Cá Laser", emoji: "🐟" },
+              { type: "Cá Mập Volt", emoji: "🦈" },
+              { type: "Sứa Plasma", emoji: "🪼" },
+              { type: "Mực Điện Tử", emoji: "🦑" },
+              { type: "Cá Đuối Quang Phổ", emoji: "🛸" },
+              { type: "Cá Heo Số", emoji: "🐬" },
+            ],
+          },
+          1: {
+            // Đầm Lầy Toxic
+            prefixes: [
+              "Toxic",
+              "Acid",
+              "Venom",
+              "Mutant",
+              "Sludge",
+              "Rotten",
+              "Biohazard",
+              "Nhiễm Độc",
+              "Ăn Mòn",
+              "Hóa Chất",
+              "Phóng Xạ",
+              "Bùn Lầy",
+              "Trầm Tích",
+              "Nguy Hiểm",
+            ],
+            species: [
+              { type: "Lươn Độc", emoji: "🐍" },
+              { type: "Ếch Biến Dị", emoji: "🐸" },
+              { type: "Cá Trê Bùn Axit", emoji: "🐟" },
+              { type: "Bạch Tuộc Độc", emoji: "🐙" },
+              { type: "Cua Đột Biến", emoji: "🦀" },
+              { type: "Đỉa Khổng Lồ", emoji: "🐛" },
+            ],
+          },
+          2: {
+            // Băng Vĩnh Cửu
+            prefixes: [
+              "Frost",
+              "Glacier",
+              "Frozen",
+              "Blizzard",
+              "Tundra",
+              "Băng Giá",
+              "Tuyết Phủ",
+              "Hàn Băng",
+              "Bắc Cực",
+              "Tảng Băng",
+              "Đông Cứng",
+              "Tinh Thể Băng",
+            ],
+            species: [
+              { type: "Cá Tuyết", emoji: "🐟" },
+              { type: "Cá Tảng Băng", emoji: "🐋" },
+              { type: "Cá Hồi Băng", emoji: "🐟" },
+              { type: "Tôm Tuyết", emoji: "🦐" },
+              { type: "Sứa Thủy Tinh", emoji: "🪼" },
+              { type: "Voi Biển Tundra", emoji: "🦭" },
+            ],
+          },
+        };
+
+        const suffixes = [
+          "X",
+          "Prime",
+          "MK-II",
+          "Alpha",
+          "Beta",
+          "Nexus",
+          "Matrix",
+          "Phantom",
+          "Vortex",
+          "Slayer",
+          "Zero",
+          "Echo",
+          "Nova",
+        ];
+
+        // 1. Generate Exactly 500 Custom Fishing Rods Algorithmically
+        function buildRods() {
+          const materialPool = [
+            "Khởi Đầu",
+            "Cơ Bản",
+            "Sợi Thủy Tinh",
+            "Cacbon Tinh Che",
+            "Hợp Kim Neon",
+            "Thép Xung Lực",
+            "Plasma Core",
+            "Ma Trận Từ Tính",
+            "Pha Lê Cổ Đại",
+            "Đại Dương Huyền Thoại",
+            "Rồng Thần",
+            "Vô Cực",
+          ];
+
+          for (let i = 1; i <= 500; i++) {
+            const tierGroup = Math.floor((i - 1) / 45);
+            const material =
+              materialPool[Math.min(tierGroup, materialPool.length - 1)];
+            const subIndex = ((i - 1) % 45) + 1;
+            const name = `${material} Rod ${"I".repeat(subIndex % 4 || 1)}${subIndex > 3 ? " V" + Math.floor(subIndex / 4) : ""}`;
+
+            const price = Math.round(100 * Math.pow(1.16, i - 1));
+            let progressRatio = (i - 1) / 499;
+
+            let normalRate = Math.max(10, 96.8 - progressRatio * 70);
+            let mediumRate = Math.min(60, 3 + progressRatio * 45);
+            let rareRate = Math.min(25, 0.1 + progressRatio * 20);
+            let ultraRate = Math.min(5, 0.1 + progressRatio * 4.9);
+
+            let hexColor = "#00ffff";
+            if (i > 100) hexColor = "#2196F3";
+            if (i > 250) hexColor = "#9c27b0";
+            if (i > 400) hexColor = "#ffd700";
+
+            rods.push({
+              id: i,
+              name: name,
+              price: price,
+              color: hexColor,
+              rates: {
+                normal: normalRate,
+                medium: mediumRate,
+                rare: rareRate,
+                ultra: ultraRate,
+              },
+            });
+          }
+        }
+
+        // 2. Generate Exactly 2050 Dynamic Ocean Entities & Creatures Algorithmically (Divided by Biomes)
+        function buildCreatures() {
+          let currentId = 1;
+
+          for (let r = 1; r <= 7; r++) {
+            const matrixCount = r === 7 ? 52 : 333;
+            const meta = rarityMatrix[r];
+
+            for (let k = 0; k < matrixCount; k++) {
+              if (currentId > 2050) break;
+
+              // Distribute evenly across 3 biomes
+              const biomeId = currentId % 3;
+              const vocab = biomeVocab[biomeId];
+
+              const pIdx = (currentId * 7 + k * 3) % vocab.prefixes.length;
+              const sIdx = (currentId * 13 + k * 7) % suffixes.length;
+              const spIdx = (currentId * 3 + k * 11) % vocab.species.length;
+
+              const prefix = vocab.prefixes[pIdx];
+              const suffix = suffixes[sIdx];
+              const group = vocab.species[spIdx];
+
+              const name = `${prefix} ${group.type} ${suffix}`;
+              const delta = k / matrixCount;
+              const price = Math.round(
+                meta.minPrice + delta * (meta.maxPrice - meta.minPrice),
+              );
+
+              const desc = `Sinh vật đặc hữu thuộc vùng ${biomes[biomeId].name}, mang mã hóa gen thích nghi ${prefix}-${suffix}, tỏa ra năng lượng bậc ${meta.label}.`;
+
+              creatures.push({
+                id: currentId,
+                biomeId: biomeId, // Tag biome restriction
+                name: name,
+                emoji: group.emoji,
+                rarity: r,
+                price: price,
+                desc: desc,
+              });
+
+              currentId++;
+            }
+          }
+        }
+
+        return {
+          init: () => {
+            buildRods();
+            buildCreatures();
+          },
+          getRods: () => rods,
+          getCreatures: () => creatures,
+        };
+      })();
+
+      dataMaster.init();
+
+      // -------------------------------------------------------------
+      // MODULE: SAVE / COMPLIANCE SYSTEM (LOCALSTORAGE)
+      // -------------------------------------------------------------
+      const saveSystem = {
+        localStorageKey: "CYBER_NEON_FISHING_SAVE_v2026",
+
+        save: () => {
+          localStorage.setItem(
+            saveSystem.localStorageKey,
+            JSON.stringify(gameState),
+          );
+          saveSystem.syncGlobalUIHeaders();
+        },
+
+        load: () => {
+          const raw = localStorage.getItem(saveSystem.localStorageKey);
+          if (raw) {
+            try {
+              const parsed = JSON.parse(raw);
+              gameState = Object.assign({}, gameState, parsed);
+            } catch (e) {
+              console.error("Save state corrupt, generating new deck.", e);
+            }
+          }
+          saveSystem.syncGlobalUIHeaders();
+        },
+
+        syncGlobalUIHeaders: () => {
+          document.getElementById("global-coin-count").innerText =
+            gameState.coins.toLocaleString();
+          const activeRod =
+            dataMaster.getRods().find((r) => r.id === gameState.activeRodId) ||
+            dataMaster.getRods()[0];
+          const badge = document.getElementById("global-active-rod");
+          badge.innerText = activeRod.name;
+          badge.style.borderColor = activeRod.color;
+          badge.style.color = activeRod.color;
+          badge.style.boxShadow = `0 0 6px ${activeRod.color}`;
+
+          document.getElementById("setting-haptic").checked =
+            gameState.settings.haptic;
+          document.getElementById("setting-audio").checked =
+            gameState.settings.audio;
+
+          document.getElementById("stats-casts").innerText = (
+            gameState.stats.totalCasts || 0
+          ).toLocaleString();
+          document.getElementById("stats-catches").innerText = (
+            gameState.stats.totalCatches || 0
+          ).toLocaleString();
+          document.getElementById("stats-earnings").innerText = (
+            gameState.stats.totalEarnings || 0
+          ).toLocaleString();
+        },
+
+        updateSetting: (key, val) => {
+          gameState.settings[key] = val;
+          saveSystem.save();
+        },
+
+        hardResetGame: () => {
+          if (
+            confirm(
+              "BẠN CÓ CHẮC CHẮN MUỐN XÓA TOÀN BỘ TIẾN TRÌNH CHƠI GAME KHÔNG?",
+            )
+          ) {
+            localStorage.removeItem(saveSystem.localStorageKey);
+            window.location.reload();
+          }
+        },
+      };
+
+      // -------------------------------------------------------------
+      // MODULE: SYNTHETIC WEB AUDIO API GENERATOR
+      // -------------------------------------------------------------
+      const audioSystem = {
+        ctx: null,
+        init: () => {
+          if (!audioSystem.ctx) {
+            audioSystem.ctx = new (
+              window.AudioContext || window.webkitAudioContext
+            )();
+          }
+        },
+        playTone: (freq, type, duration, vol = 0.1) => {
+          if (!gameState.settings.audio) return;
+          try {
+            audioSystem.init();
+            let osc = audioSystem.ctx.createOscillator();
+            let gainNode = audioSystem.ctx.createGain();
+
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioSystem.ctx.currentTime);
+
+            gainNode.gain.setValueAtTime(vol, audioSystem.ctx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(
+              0.00001,
+              audioSystem.ctx.currentTime + duration,
+            );
+
+            osc.connect(gainNode);
+            gainNode.connect(audioSystem.ctx.destination);
+
+            osc.start();
+            osc.stop(audioSystem.ctx.currentTime + duration);
+          } catch (e) {}
+        },
+        playCastSFX: () => {
+          audioSystem.playTone(300, "sine", 0.15, 0.15);
+          setTimeout(() => audioSystem.playTone(450, "sine", 0.2, 0.1), 80);
+        },
+        playSplashSFX: () => {
+          audioSystem.playTone(150, "triangle", 0.4, 0.3);
+        },
+        playBiteSFX: () => {
+          audioSystem.playTone(880, "square", 0.1, 0.2);
+          setTimeout(() => audioSystem.playTone(660, "square", 0.1, 0.2), 60);
+        },
+        playCatchSFX: (rarity) => {
+          const baseFreq = 400 + rarity * 80;
+          audioSystem.playTone(baseFreq, "sine", 0.2, 0.2);
+          setTimeout(
+            () => audioSystem.playTone(baseFreq * 1.25, "sine", 0.2, 0.2),
+            100,
+          );
+          setTimeout(
+            () => audioSystem.playTone(baseFreq * 1.5, "sine", 0.3, 0.2),
+            200,
+          );
+        },
+      };
+
+      // -------------------------------------------------------------
+      // MODULE: CANVAS RUNTIME SYSTEM ENGINE GRAPHICS (60 FPS)
+      // -------------------------------------------------------------
+      const gameEngine = {
+        canvas: null,
+        ctx: null,
+        animId: null,
+        state: "idle", // idle, casting, waiting, bite, reeling, celebration
+        timer: 0,
+        isAutoFishing: false, // Flag auto state tracker
+        bobber: { x: 0, y: 0, targetX: 0, targetY: 0, t: 0, waveOffset: 0 },
+        ripples: [],
+        particles: [],
+        fishes: [],
+        rodAngle: 0,
+        targetRodAngle: 0,
+        rodFlex: 0,
+
+        init: () => {
+          gameEngine.canvas = document.getElementById("game-canvas");
+          gameEngine.ctx = gameEngine.canvas.getContext("2d");
+
+          gameEngine.resize();
+          window.addEventListener("resize", gameEngine.resize);
+
+          for (let i = 0; i < 4; i++) {
+            gameEngine.fishes.push({
+              x: Math.random() * gameEngine.canvas.width,
+              y:
+                gameEngine.canvas.height * 0.5 +
+                Math.random() * gameEngine.canvas.height * 0.3,
+              speed: 0.4 + Math.random() * 0.6,
+              size: 8 + Math.random() * 12,
+              dir: Math.random() > 0.5 ? 1 : -1,
+            });
+          }
+
+          gameEngine.canvas.addEventListener(
+            "touchstart",
+            gameEngine.handleTap,
+          );
+          gameEngine.canvas.addEventListener("mousedown", gameEngine.handleTap);
+
+          if (gameEngine.animId) cancelAnimationFrame(gameEngine.animId);
+          gameEngine.tick();
+        },
+
+        resize: () => {
+          if (!gameEngine.canvas) return;
+          gameEngine.canvas.width = gameEngine.canvas.parentElement.clientWidth;
+          gameEngine.canvas.height =
+            gameEngine.canvas.parentElement.clientHeight;
+        },
+
+        setBiome: (index) => {
+          currentBiomeIndex = index;
+          const btns = document.querySelectorAll(".biome-btn");
+          btns.forEach((b, idx) => b.classList.toggle("active", idx === index));
+          audioSystem.playTone(200 + index * 100, "sine", 0.1, 0.1);
+        },
+
+        toggleAutoFishing: (e) => {
+          if (e) e.stopPropagation(); // Avoid triggering manual tap
+          gameEngine.isAutoFishing = !gameEngine.isAutoFishing;
+          const btn = document.getElementById("auto-fish-btn");
+
+          if (gameEngine.isAutoFishing) {
+            btn.innerText = "TỰ ĐỘNG CÂU: ON";
+            btn.classList.add("active");
+            if (gameEngine.state === "idle") {
+              gameEngine.startCast();
+            }
+          } else {
+            btn.innerText = "TỰ ĐỘNG CÂU: OFF";
+            btn.classList.remove("active");
+          }
+          audioSystem.playTone(440, "sine", 0.1, 0.1);
+        },
+
+        handleTap: (e) => {
+          if (e.type === "touchstart") e.preventDefault();
+          // If auto fishing is active, deny manual input to prevent interference
+          if (gameEngine.isAutoFishing) return;
+
+          if (gameEngine.state === "idle") {
+            gameEngine.startCast();
+          }
+        },
+
+        startCast: () => {
+          gameEngine.state = "casting";
+          gameEngine.timer = 0;
+          document.getElementById("tap-instruction").innerText =
+            "ĐANG THẢ DÂY CÂU...";
+
+          gameState.stats.totalCasts++;
+          saveSystem.save();
+
+          gameEngine.bobber.x = gameEngine.canvas.width * 0.35;
+          gameEngine.bobber.y = gameEngine.canvas.height * 0.25;
+          gameEngine.bobber.targetX =
+            gameEngine.canvas.width * 0.5 + (Math.random() - 0.5) * 60;
+          gameEngine.bobber.targetY =
+            gameEngine.canvas.height * 0.6 + Math.random() * 80;
+          gameEngine.bobber.t = 0;
+
+          gameEngine.targetRodAngle = -Math.PI * 0.25;
+          audioSystem.playCastSFX();
+        },
+
+        triggerSplash: (x, y, power = 1) => {
+          audioSystem.playSplashSFX();
+          gameEngine.ripples.push({
+            x: x,
+            y: y,
+            r: 2,
+            maxR: 35 * power,
+            alpha: 1,
+          });
+          const currentTheme = biomes[currentBiomeIndex];
+          for (let i = 0; i < 12 * power; i++) {
+            gameEngine.particles.push({
+              x: x,
+              y: y,
+              vx: (Math.random() - 0.5) * 4 * power,
+              vy: -Math.random() * 6 * power - 2,
+              alpha: 1,
+              color:
+                Math.random() > 0.4
+                  ? currentTheme.primary
+                  : currentTheme.secondary,
+              size: 2 + Math.random() * 3,
+            });
+          }
+        },
+
+        executeCatchRoll: () => {
+          const activeRod =
+            dataMaster.getRods().find((r) => r.id === gameState.activeRodId) ||
+            dataMaster.getRods()[0];
+          const pool = dataMaster.getCreatures();
+          const roll = Math.random() * 100;
+
+          let targetRarity = 1;
+          if (roll <= activeRod.rates.ultra) targetRarity = 7;
+          else if (roll <= activeRod.rates.ultra + activeRod.rates.rare)
+            targetRarity = 5;
+          else if (
+            roll <=
+            activeRod.rates.ultra +
+              activeRod.rates.rare +
+              activeRod.rates.medium
+          )
+            targetRarity = 3;
+          else if (
+            roll <=
+            activeRod.rates.ultra +
+              activeRod.rates.rare +
+              activeRod.rates.medium +
+              20
+          )
+            targetRarity = 2;
+          else targetRarity = 1;
+
+          // NEW: Filter pool matching both Rarity AND Current Active Biome
+          let subPool = pool.filter(
+            (c) => c.rarity === targetRarity && c.biomeId === currentBiomeIndex,
+          );
+          if (subPool.length === 0)
+            subPool = pool.filter((c) => c.rarity === targetRarity); // fallback
+          if (subPool.length === 0)
+            subPool = pool.filter((c) => c.rarity === 1);
+
+          const randomCreature =
+            subPool[Math.floor(Math.random() * subPool.length)];
+
+          gameState.inventory.push(randomCreature);
+          gameState.stats.totalCatches++;
+
+          const isNew = !gameState.caughtCreatureIds[randomCreature.id];
+          gameState.caughtCreatureIds[randomCreature.id] =
+            (gameState.caughtCreatureIds[randomCreature.id] || 0) + 1;
+
+          saveSystem.save();
+          inventorySystem.render();
+          gameEngine.showCatchModal(randomCreature, isNew);
+        },
+
+        showCatchModal: (creature, isNew) => {
+          const meta = rarityMatrix[creature.rarity];
+
+          document.getElementById("catch-new-badge").style.display = isNew
+            ? "block"
+            : "none";
+          document.getElementById("catch-display-emoji").innerText =
+            creature.emoji;
+          document.getElementById("catch-display-name").innerText =
+            creature.name;
+
+          const rarityLabel = document.getElementById("catch-display-rarity");
+          rarityLabel.innerText = meta.label.toUpperCase();
+          rarityLabel.className = `item-rarity-tag rarity-${meta.key}`;
+
+          document.getElementById("catch-display-desc").innerText =
+            creature.desc;
+          document.getElementById("catch-display-value").innerText =
+            creature.price.toLocaleString();
+
+          const windowCard = document.getElementById("catch-window-card");
+          windowCard.className = "catch-window bg-rarity-" + meta.key;
+
+          document.getElementById("catch-modal").classList.add("active");
+          audioSystem.playCatchSFX(creature.rarity);
+
+          if (gameState.settings.haptic && navigator.vibrate) {
+            navigator.vibrate([100, 50, 100]);
+          }
+        },
+
+        closeCatchModal: () => {
+          document.getElementById("catch-modal").classList.remove("active");
+          gameEngine.state = "idle";
+          document.getElementById("tap-instruction").innerText =
+            gameEngine.isAutoFishing
+              ? "TỰ ĐỘNG CÂU ĐANG CHẠY..."
+              : "CHẠM ĐỂ QUĂNG CẦN";
+        },
+
+        tick: () => {
+          gameEngine.update();
+          gameEngine.render();
+          gameEngine.animId = requestAnimationFrame(gameEngine.tick);
+        },
+
+        update: () => {
+          gameEngine.bobber.waveOffset += 0.04;
+          const theme = biomes[currentBiomeIndex];
+
+          for (let i = gameEngine.particles.length - 1; i >= 0; i--) {
+            let p = gameEngine.particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.15;
+            p.alpha -= 0.02;
+            if (p.alpha <= 0) gameEngine.particles.splice(i, 1);
+          }
+
+          for (let i = gameEngine.ripples.length - 1; i >= 0; i--) {
+            let r = gameEngine.ripples[i];
+            r.r += 0.6;
+            r.alpha -= 0.015;
+            if (r.alpha <= 0) gameEngine.ripples.splice(i, 1);
+          }
+
+          gameEngine.fishes.forEach((f) => {
+            f.x += f.speed * f.dir;
+            if (f.x > gameEngine.canvas.width + 50 && f.dir === 1) f.x = -50;
+            if (f.x < -50 && f.dir === -1) f.x = gameEngine.canvas.width + 50;
+          });
+
+          if (
+            Math.random() < 0.003 &&
+            gameEngine.state !== "reeling" &&
+            gameEngine.state !== "celebration"
+          ) {
+            let rx = Math.random() * gameEngine.canvas.width;
+            let ry = gameEngine.canvas.height * 0.6 + Math.random() * 80;
+            gameEngine.triggerSplash(rx, ry, 0.6);
+          }
+
+          gameEngine.rodAngle +=
+            (gameEngine.targetRodAngle - gameEngine.rodAngle) * 0.1;
+
+          switch (gameEngine.state) {
+            case "idle":
+              gameEngine.targetRodAngle = -Math.PI * 0.15;
+              gameEngine.rodFlex = 0;
+              // NEW: Auto Fishing loop deployment bridge trigger
+              if (gameEngine.isAutoFishing) {
+                gameEngine.startCast();
+              }
+              break;
+
+            case "casting":
+              gameEngine.bobber.t += 0.04;
+              let t = gameEngine.bobber.t;
+              if (t >= 1) {
+                gameEngine.bobber.x = gameEngine.bobber.targetX;
+                gameEngine.bobber.y = gameEngine.bobber.targetY;
+                gameEngine.state = "waiting";
+                gameEngine.timer = 0;
+                gameEngine.triggerSplash(
+                  gameEngine.bobber.x,
+                  gameEngine.bobber.y,
+                  1,
+                );
+              } else {
+                gameEngine.bobber.x =
+                  gameEngine.bobber.x +
+                  (gameEngine.bobber.targetX - gameEngine.bobber.x) * t;
+                const h = gameEngine.canvas.height * 0.2;
+                gameEngine.bobber.y =
+                  gameEngine.bobber.y +
+                  (gameEngine.bobber.targetY - gameEngine.bobber.y) * t -
+                  Math.sin(t * Math.PI) * h;
+              }
+              break;
+
+            case "waiting":
+              gameEngine.targetRodAngle = -Math.PI * 0.12;
+              gameEngine.timer++;
+              gameEngine.bobber.y =
+                gameEngine.bobber.targetY +
+                Math.sin(gameEngine.bobber.waveOffset) * 2;
+
+              if (gameEngine.timer % 60 === 0) {
+                gameEngine.ripples.push({
+                  x: gameEngine.bobber.x,
+                  y: gameEngine.bobber.targetY,
+                  r: 1,
+                  maxR: 12,
+                  alpha: 0.6,
+                });
+              }
+
+              if (gameEngine.timer > 120 + Math.random() * 90) {
+                gameEngine.state = "bite";
+                gameEngine.timer = 0;
+                audioSystem.playBiteSFX();
+                if (gameState.settings.haptic && navigator.vibrate)
+                  navigator.vibrate(60);
+              }
+              break;
+
+            case "bite":
+              gameEngine.timer++;
+              gameEngine.bobber.y =
+                gameEngine.bobber.targetY +
+                12 * Math.sin(gameEngine.timer * 0.8);
+              gameEngine.rodFlex = Math.sin(gameEngine.timer * 0.5) * 8;
+              document.getElementById("tap-instruction").innerText =
+                "CÁ CẮN CÂU! TỰ ĐỘNG KÉO...";
+
+              if (gameEngine.timer % 15 === 0) {
+                gameEngine.ripples.push({
+                  x: gameEngine.bobber.x,
+                  y: gameEngine.bobber.targetY,
+                  r: 1,
+                  maxR: 20,
+                  alpha: 0.8,
+                });
+              }
+
+              if (gameEngine.timer > 60) {
+                gameEngine.state = "reeling";
+                gameEngine.timer = 0;
+                gameEngine.triggerSplash(
+                  gameEngine.bobber.x,
+                  gameEngine.bobber.targetY,
+                  1.4,
+                );
+              }
+              break;
+
+            case "reeling":
+              gameEngine.timer++;
+              gameEngine.targetRodAngle = -Math.PI * 0.28;
+              gameEngine.rodFlex = 25 + Math.sin(gameEngine.timer * 0.4) * 5;
+
+              gameEngine.bobber.x =
+                gameEngine.bobber.x +
+                (gameEngine.canvas.width * 0.2 - gameEngine.bobber.x) * 0.1;
+              gameEngine.bobber.y =
+                gameEngine.bobber.y +
+                (gameEngine.canvas.height * 0.25 - gameEngine.bobber.y) * 0.1;
+
+              if (gameEngine.timer >= 60) {
+                gameEngine.state = "celebration";
+                gameEngine.timer = 0; // Clear timer for celebration overlay countdown
+                gameEngine.executeCatchRoll();
+              }
+              break;
+
+            case "celebration":
+              gameEngine.targetRodAngle = -Math.PI * 0.2;
+              gameEngine.rodFlex = 10;
+
+              // NEW: Auto closing modal configuration delay loops if macro active
+              if (gameEngine.isAutoFishing) {
+                gameEngine.timer++;
+                if (gameEngine.timer >= 90) {
+                  // 90 Frames ~ 1.5 seconds window to preview caught loot
+                  gameEngine.closeCatchModal(); // Return system state to 'idle', prompting re-cast loop
+                }
+              }
+              break;
+          }
+        },
+
+        render: () => {
+          const ctx = gameEngine.ctx;
+          const W = gameEngine.canvas.width;
+          const H = gameEngine.canvas.height;
+          const theme = biomes[currentBiomeIndex];
+
+          ctx.clearRect(0, 0, W, H);
+
+          let bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+          bgGrad.addColorStop(0, "#040408");
+          bgGrad.addColorStop(0.28, "#0b0c16");
+          bgGrad.addColorStop(0.3, theme.deep);
+          bgGrad.addColorStop(1, "#020205");
+          ctx.fillStyle = bgGrad;
+          ctx.fillRect(0, 0, W, H);
+
+          ctx.save();
+          gameEngine.fishes.forEach((f) => {
+            ctx.fillStyle = `rgba(${f.dir > 0 ? "0,255,255" : "255,0,255"}, 0.06)`;
+            ctx.beginPath();
+            ctx.ellipse(f.x, f.y, f.size, f.size * 0.4, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(f.x - f.size * f.dir, f.y);
+            ctx.lineTo(f.x - f.size * 1.5 * f.dir, f.y - f.size * 0.4);
+            ctx.lineTo(f.x - f.size * 1.5 * f.dir, f.y + f.size * 0.4);
+            ctx.closePath();
+            ctx.fill();
+          });
+          ctx.restore();
+
+          let waterLineY = H * 0.3;
+          ctx.strokeStyle = theme.primary;
+          ctx.lineWidth = 2;
+          ctx.shadowColor = theme.primary;
+          ctx.shadowBlur = 8;
+          ctx.beginPath();
+          ctx.moveTo(0, waterLineY);
+          ctx.lineTo(W, waterLineY);
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+
+          ctx.fillStyle = "#06070d";
+          ctx.strokeStyle = theme.secondary;
+          ctx.lineWidth = 1.5;
+          ctx.shadowColor = theme.secondary;
+          ctx.shadowBlur = 6;
+          ctx.beginPath();
+          ctx.moveTo(0, waterLineY);
+          ctx.lineTo(W * 0.3, waterLineY);
+          ctx.lineTo(W * 0.22, H * 0.18);
+          ctx.lineTo(0, H * 0.18);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+
+          ctx.save();
+          gameEngine.ripples.forEach((r) => {
+            ctx.strokeStyle = `rgba(${r.alpha * 100}, 255, 255, ${r.alpha})`;
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.ellipse(r.x, r.y, r.r, r.r * 0.35, 0, 0, Math.PI * 2);
+            ctx.stroke();
+          });
+          ctx.restore();
+
+          let dockX = W * 0.1;
+          let dockY = H * 0.22;
+          ctx.fillStyle = "#10101f";
+          ctx.strokeStyle = "#00ffff";
+          ctx.lineWidth = 2;
+          ctx.fillRect(dockX - 15, dockY, 30, H * 0.08);
+          ctx.strokeRect(dockX - 15, dockY, 30, H * 0.08);
+
+          let rodBaseX = dockX;
+          let rodBaseY = dockY + 5;
+          let rodLength = 75;
+
+          let tipX = rodBaseX + Math.cos(gameEngine.rodAngle) * rodLength;
+          let tipY =
+            rodBaseY +
+            Math.sin(gameEngine.rodAngle) * rodLength +
+            gameEngine.rodFlex;
+
+          const activeRodData =
+            dataMaster.getRods().find((r) => r.id === gameState.activeRodId) ||
+            dataMaster.getRods()[0];
+          ctx.strokeStyle = activeRodData.color;
+          ctx.lineWidth = 3;
+          ctx.shadowColor = activeRodData.color;
+          ctx.shadowBlur = 10;
+          ctx.beginPath();
+          ctx.moveTo(rodBaseX, rodBaseY);
+          ctx.quadraticCurveTo(
+            rodBaseX + (tipX - rodBaseX) * 0.5,
+            rodBaseY + (tipY - rodBaseY) * 0.2 + gameEngine.rodFlex * 0.5,
+            tipX,
+            tipY,
+          );
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+
+          if (gameEngine.state !== "idle") {
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(tipX, tipY);
+
+            if (gameEngine.state === "casting") {
+              ctx.lineTo(gameEngine.bobber.x, gameEngine.bobber.y);
+            } else {
+              ctx.quadraticCurveTo(
+                tipX + (gameEngine.bobber.x - tipX) * 0.4,
+                tipY + (gameEngine.bobber.y - tipY) * 0.1,
+                gameEngine.bobber.x,
+                gameEngine.bobber.y,
+              );
+            }
+            ctx.stroke();
+          }
+
+          if (
+            gameEngine.state !== "idle" &&
+            gameEngine.state !== "celebration"
+          ) {
+            ctx.fillStyle = "#ff3335";
+            ctx.shadowColor = "#ff3335";
+            ctx.shadowBlur = 5;
+            ctx.beginPath();
+            ctx.arc(
+              gameEngine.bobber.x,
+              gameEngine.bobber.y - 4,
+              4,
+              0,
+              Math.PI * 2,
+            );
+            ctx.fill();
+
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath();
+            ctx.arc(
+              gameEngine.bobber.x,
+              gameEngine.bobber.y,
+              3,
+              0,
+              Math.PI * 2,
+            );
+            ctx.fill();
+            ctx.shadowBlur = 0;
+          }
+
+          gameEngine.particles.forEach((p) => {
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.alpha;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1.0;
+          });
+        },
+      };
+
+      // -------------------------------------------------------------
+      // MODULE: INFINITE ALGORITHMIC SHOP ENGINE INFRASTRUCTURE
+      // -------------------------------------------------------------
+      const shopSystem = {
+        render: () => {
+          const container = document.getElementById("shop-container");
+          container.innerHTML = "";
+          const rods = dataMaster.getRods();
+
+          rods.forEach((rod) => {
+            const isPurchased = gameState.purchasedRodIds.includes(rod.id);
+            const isEquipped = gameState.activeRodId === rod.id;
+
+            let btnText = `MUA - ${rod.price.toLocaleString()} 💰`;
+            let btnClass = "";
+            let isDisable = gameState.coins < rod.price;
+
+            if (isPurchased) {
+              if (isEquipped) {
+                btnText = "ĐANG TRANG BỊ";
+                btnClass = "equipped";
+                isDisable = true;
+              } else {
+                btnText = "TRANG BỊ THAY";
+                btnClass = "purchased";
+                isDisable = false;
+              }
+            } else {
+              const isNextInLine =
+                rod.id === 1 || gameState.purchasedRodIds.includes(rod.id - 1);
+              if (!isNextInLine) {
+                btnText = "BỊ KHÓA (Mua cấp trước)";
+                isDisable = true;
+              }
+            }
+
+            const card = document.createElement("div");
+            card.className = "neon-card";
+            card.style.borderColor = rod.color;
+            if (isEquipped)
+              card.style.boxShadow = `inset 0 0 10px rgba(0,255,255,0.15), 0 0 8px ${rod.color}`;
+
+            card.innerHTML = `
+                        <div class="rod-tier-title" style="color: ${rod.color}">⚡ ${rod.name}</div>
+                        <div class="stat-label">Cấp Cần Câu: <span style="color:#fff;font-weight:bold">${rod.id} / 500</span></div>
+                        <div class="rod-price">${isPurchased ? "Đã Sở Hữu" : rod.price.toLocaleString() + " Vàng"}</div>
+                        <div class="rod-stats">
+                            🟢 Normal: ${rod.rates.normal.toFixed(1)}%<br>
+                            🔵 Rare: ${rod.rates.rare.toFixed(1)}%<br>
+                            🟡 Ultra: ${rod.rates.ultra.toFixed(1)}%
+                        </div>
+                        <button class="shop-btn ${btnClass}" ${isDisable ? "disabled" : ""} onclick="shopSystem.executeAction(${rod.id}, ${isPurchased})">
+                            ${btnText}
+                        </button>
+                    `;
+            container.appendChild(card);
+          });
+        },
+
+        executeAction: (id, isPurchased) => {
+          const rod = dataMaster.getRods().find((r) => r.id === id);
+          if (!rod) return;
+
+          if (isPurchased) {
+            gameState.activeRodId = id;
+            audioSystem.playTone(523.25, "sine", 0.15, 0.15);
+          } else {
+            if (gameState.coins >= rod.price) {
+              gameState.coins -= rod.price;
+              gameState.purchasedRodIds.push(id);
+              gameState.activeRodId = id;
+              audioSystem.playTone(587.33, "sine", 0.2, 0.2);
+            } else {
+              return;
+            }
+          }
+          saveSystem.save();
+          shopSystem.render();
+        },
+      };
+
+      // -------------------------------------------------------------
+      // MODULE: PLAYER STORAGE HOLDINGS INVENTORY MANAGER
+      // -------------------------------------------------------------
+      const inventorySystem = {
+        render: () => {
+          const container = document.getElementById("inventory-container");
+          container.innerHTML = "";
+
+          document.getElementById("inventory-count-label").innerText =
+            `Đang chứa: ${gameState.inventory.length} sinh vật`;
+
+          if (gameState.inventory.length === 0) {
+            container.innerHTML = `<div class="empty-text">Kho rỗng. Hãy ra bờ hồ câu vài sản vật giá trị neon lấp lánh nào!</div>`;
+            return;
+          }
+
+          gameState.inventory.forEach((item, index) => {
+            const meta = rarityMatrix[item.rarity];
+            const card = document.createElement("div");
+            card.className = `neon-card bg-rarity-${meta.key}`;
+
+            card.innerHTML = `
+                        <div class="item-emoji">${item.emoji}</div>
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-rarity-tag rarity-${meta.key}">${meta.label}</div>
+                        <div class="item-value">💰 ${item.price}</div>
+                        <button class="shop-btn" style="border-color:#ff5555; color:#ff5555; text-shadow:none" onclick="inventorySystem.sellSingle(${index})">BÁN SẢN VẬT</button>
+                    `;
+            container.appendChild(card);
+          });
+        },
+
+        sellSingle: (index) => {
+          const item = gameState.inventory[index];
+          if (!item) return;
+
+          gameState.coins += item.price;
+          gameState.stats.totalEarnings += item.price;
+          gameState.inventory.splice(index, 1);
+
+          audioSystem.playTone(880, "sine", 0.08, 0.1);
+
+          saveSystem.save();
+          inventorySystem.render();
+          shopSystem.render();
+          createFloatingTextEffect(`+${item.price} 💰`);
+        },
+
+        sellAll: () => {
+          if (gameState.inventory.length === 0) return;
+
+          let sum = 0;
+          gameState.inventory.forEach((item) => {
+            sum += item.price;
+          });
+
+          gameState.coins += sum;
+          gameState.stats.totalEarnings += sum;
+          gameState.inventory = [];
+
+          audioSystem.playTone(987.77, "sine", 0.25, 0.2);
+
+          saveSystem.save();
+          inventorySystem.render();
+          shopSystem.render();
+          createFloatingTextEffect(`+${sum.toLocaleString()} 💰`);
+        },
+      };
+
+      // -------------------------------------------------------------
+      // MODULE: COMPREHENSIVE REGISTRY ARCHIVE (POKEDEX)
+      // -------------------------------------------------------------
+      const collectionSystem = {
+        currentFilter: "all",
+
+        render: () => {
+          const container = document.getElementById("pokedex-container");
+          container.innerHTML = "";
+          const pool = dataMaster.getCreatures();
+
+          let unlockedCount = 0;
+          pool.forEach((c) => {
+            if (gameState.caughtCreatureIds[c.id]) unlockedCount++;
+          });
+
+          const totalCount = pool.length;
+          document.getElementById("pokedex-ratio-label").innerText =
+            `${unlockedCount} / ${totalCount}`;
+          const pct = (unlockedCount / totalCount) * 100;
+          document.getElementById("pokedex-ratio-fill").style.width = `${pct}%`;
+
+          const filtered = pool.filter((c) => {
+            if (collectionSystem.currentFilter === "all") return true;
+            const meta = rarityMatrix[c.rarity];
+            return meta.key === collectionSystem.currentFilter;
+          });
+
+          if (filtered.length === 0) {
+            container.innerHTML = `<div class="empty-text">Chưa tìm thấy mục nào thuộc nhóm bộ lọc này.</div>`;
+            return;
+          }
+
+          const topSlice = filtered.slice(0, 120);
+
+          topSlice.forEach((item) => {
+            const isCaught = !!gameState.caughtCreatureIds[item.id];
+            const meta = rarityMatrix[item.rarity];
+            const card = document.createElement("div");
+
+            if (isCaught) {
+              card.className = `neon-card bg-rarity-${meta.key} pokedex-card`;
+              card.innerHTML = `
+                            <div class="item-emoji">${item.emoji}</div>
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-rarity-tag rarity-${meta.key}">${meta.label}</div>
+                            <div style="font-size:0.6rem; text-align:center; color:#888">Đã bắt: <span style="color:#fff;font-weight:bold">${gameState.caughtCreatureIds[item.id]}</span></div>
+                            <div style="font-size:0.65rem; color:#ffd700; text-align:center; margin-top:2px">Vùng: ${biomes[item.biomeId].name.split(" ")[1]}</div>
+                        `;
+            } else {
+              card.className = `neon-card pokedex-card locked`;
+              card.innerHTML = `
+                            <div class="item-emoji">❓</div>
+                            <div class="item-name" style="color:#444">?????????</div>
+                            <div class="item-rarity-tag" style="color:#444">LOCKED</div>
+                            <div style="font-size:0.6rem; text-align:center; color:#333">Vùng: ${biomes[item.biomeId].name.split(" ")[1]}</div>
+                        `;
+            }
+            container.appendChild(card);
+          });
+
+          if (filtered.length > 120) {
+            const note = document.createElement("div");
+            note.className = "empty-text";
+            note.innerText = `... và ${filtered.length - 120} sinh vật cùng loại khác (Hãy tiếp tục khám phá)...`;
+            container.appendChild(note);
+          }
+        },
+
+        filter: (rarityKey, btnElement) => {
+          collectionSystem.currentFilter = rarityKey;
+          const btns = document.querySelectorAll(
+            "#pokedex-filter-container .filter-btn",
+          );
+          btns.forEach((b) => b.classList.remove("active"));
+          btnElement.classList.add("active");
+          collectionSystem.render();
+        },
+      };
+
+      // -------------------------------------------------------------
+      // MODULE: VIEW CONTROLLER TAB LAYOUT MANAGER INFRASTRUCTURE
+      // -------------------------------------------------------------
+      function switchView(targetPanelId, btn) {
+        audioSystem.playTone(700, "sine", 0.05, 0.05);
+
+        const navBtns = document.querySelectorAll("nav .nav-btn");
+        navBtns.forEach((b) => b.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+
+        const panels = document.querySelectorAll(".view-panel");
+        panels.forEach((p) => p.classList.remove("active"));
+
+        const targetView = document.getElementById(`view-${targetPanelId}`);
+        if (targetView) targetView.classList.add("active");
+
+        if (targetPanelId === "shop") shopSystem.render();
+        if (targetPanelId === "inventory") inventorySystem.render();
+        if (targetPanelId === "collection") collectionSystem.render();
+      }
+
+      function createFloatingTextEffect(text) {
+        const wrapper = document.getElementById("game-wrapper");
+        const el = document.createElement("div");
+        el.className = "floating-text";
+        el.innerText = text;
+        el.style.left = "45%";
+        el.style.top = "20%";
+        wrapper.appendChild(el);
+        setTimeout(() => el.remove(), 1200);
+      }
+
+      // -------------------------------------------------------------
+      // APPLICATION KICKSTART INITIALIZER MAIN ROUTINE EXECUTOR BLOCK
+      // -------------------------------------------------------------
+      window.addEventListener("DOMContentLoaded", () => {
+        saveSystem.load();
+        gameEngine.init();
+        shopSystem.render();
+        inventorySystem.render();
+        collectionSystem.render();
+      });
+    </script>
+  </body>
+</html>
